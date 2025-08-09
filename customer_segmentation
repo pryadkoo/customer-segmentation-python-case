@@ -1,0 +1,180 @@
+class customer:
+
+  def __init__(self, name, age, total_spent):
+    self.set_data(name, age, total_spent)
+
+  def set_data(self, name, age, total_spent):
+    self.name = name
+    self.age = age
+    self.total_spent = total_spent
+
+  def get_data(self):
+    print(f"Имя: {self.name}, Возраст: {self.age}, Потрачено: {self.total_spent}")
+
+customers_list = []
+file_path = 'customers.txt'
+
+try:
+  with open(file_path, 'r', encoding='utf-8') as file:
+    for line in file:
+      clean_line = line.strip()
+      if clean_line:
+        try:
+          data = clean_line.split(',')
+          name = data[0]
+          age = int(data[1])
+          total_spent = int(data[2])
+
+          new_customer = customer(name, age, total_spent)
+
+          customers_list.append(new_customer)
+
+        except (ValueError, IndexError) as e:
+          print(f"Ошибка при обработке строки: '{clean_line}'. Пропускаем. Ошибка: {e}")
+
+
+except FileNotFoundError:
+  print(f"Ошибка: файл '{file_path}' не найден. Убедитесь, что он находится в той же папке, что и скрипт.")
+
+def show_customers():
+  print("Список клиентов:")
+  for cust in customers_list:
+    cust.get_data()
+
+import time
+
+#def timer(func):
+    #def wrapper(*args, **kwargs):
+        #start_time = time.time()
+
+        #result = func(*args, **kwargs)
+
+        #end_time = time.time()
+
+        #elapsed_time = end_time - start_time
+        #print(f"Функция '{func.__name__}' выполнилась за {elapsed_time:.4f} секунд.")
+
+        #return result
+    #return wrapper
+
+#def log_analysis(func):
+    #def wrapper(*args, **kwargs):
+        #print(f"\n--- Выполняется анализ: '{func.__name__}' ---")
+        #result = func(*args, **kwargs)
+        #print(f"--- Анализ '{func.__name__}' завершён. ---")
+
+        #return result
+    #return wrapper
+
+#timer
+#log_analysis
+def segment_by_age():
+  sorted_customers = {
+      'до 21': [],
+      'до 27': [],
+      '32+': [],
+      '40+': [],
+      '50+': [],
+      '60+': [],
+      '70+': [],
+      '80+': []
+  }
+  for cust in customers_list:
+    if cust.age < 21:
+      sorted_customers['до 21'].append(cust)
+    elif cust.age < 27:
+      sorted_customers['до 27'].append(cust)
+    elif cust.age >= 32 and cust.age < 40:
+      sorted_customers['32+'].append(cust)
+    elif cust.age >= 40 and cust.age < 50:
+      sorted_customers['40+'].append(cust)
+    elif cust.age >= 50 and cust.age < 60:
+      sorted_customers['50+'].append(cust)
+    elif cust.age >= 60 and cust.age < 70:
+      sorted_customers['60+'].append(cust)
+    elif cust.age >= 70 and cust.age < 80:
+      sorted_customers['70+'].append(cust)
+    else: # assuming 80+
+      sorted_customers['80+'].append(cust)
+
+  print("Клиенты до 21:")
+  for cust in sorted_customers['до 21']:
+    cust.get_data()
+
+  print("\nКлиенты от 21 до 26 лет:")
+  for cust in sorted_customers['до 27']:
+    cust.get_data()
+
+  print("\nКлиенты от 32 лет и старше:")
+  if '32+' in sorted_customers:
+    for cust in sorted_customers['32+']:
+      cust.get_data()
+
+  if '40+' in sorted_customers:
+    print("\nКлиенты от 40 лет и старше:")
+    for cust in sorted_customers['40+']:
+      cust.get_data()
+
+  if '50+' in sorted_customers:
+    print("\nКлиенты от 50 лет и старше:")
+    for cust in sorted_customers['50+']:
+      cust.get_data()
+
+  if '60+' in sorted_customers:
+    print("\nКлиенты от 60 лет и старше:")
+    for cust in sorted_customers['60+']:
+      cust.get_data()
+
+  if '70+' in sorted_customers:
+    print("\nКлиенты от 70 лет и старше:")
+    for cust in sorted_customers['70+']:
+      cust.get_data()
+
+  if '80+' in sorted_customers:
+    print("\nКлиенты от 80 лет и старше:")
+    for cust in sorted_customers['80+']:
+      cust.get_data()
+
+  return sorted_customers
+
+#timer
+#log_analysis
+def find_high_spenders():
+  high_spenders_list = []
+  for cust in customers_list:
+    if cust.total_spent > 20000:
+      high_spenders_list.append(cust)
+      print(f"Имя: {cust.name}, Возраст: {cust.age}, Потрачено: {cust.total_spent}")
+  return high_spenders_list
+
+def vihod():
+  print("\n>>> До свидания! Возвращайтесь снова.")
+
+menu_options = {
+    '1': ('Показать клиентов с тратами 20к+', find_high_spenders ),
+    '2': ('Сортировать клиентов по возрасту', segment_by_age),
+    '3': ('Показать всех клиентов', show_customers),
+    '0': ('Выход', vihod),
+}
+
+def show_menu():
+    print("\n--- Клиенты компании ---")
+    for key, value in menu_options.items():
+        print(f"{key}. {value[0]}")
+    print("----------------------")
+
+while True:
+    show_menu()
+    choice = input("Выберите пункт меню: ")
+
+    if choice == '0':
+        vihod()
+        break
+
+    selected_option = menu_options.get(choice)
+
+    if selected_option:
+        # Вызываем функцию, которая хранится в словаре под индексом 1
+        selected_option[1]()
+    else:
+        print("\n>>> Неверный ввод! Пожалуйста, выберите пункт из меню.")
